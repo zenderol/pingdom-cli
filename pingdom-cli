@@ -7,62 +7,74 @@ import json
 
 PINGDOM_USERNAME = 'username'
 PINGDOM_PASSWORD = 'password'
-PINGDOM_APPKEY   = 'appkey'
+PINGDOM_APPKEY = 'appkey'
+
 
 def auth():
-	return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
+    return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
+
 
 def add_site(site_name):
-  matchObj = re.match(r"^[\w.]+$", site_name)
+    matchObj = re.match(r"^[\w.]+$", site_name)
 
-  if matchObj:
-	print "Adding %s" % site_name
-	res = pingdom_connection.method(url="checks", method="POST", parameters={"name" : site_name, "host" : site_name, "type" : "http", "resolution" : 1, "sendtoemail" : True, "sendtosms" : True, "sendnotificationwhendown" : 5})
-	print res
-  else:
-	print "Invalid site name: %s" % site_name
- 
+    default_params = {"name": site_name,
+                      "host": site_name,
+                      "type": "http",
+                      "resolution": 1,
+                      "sendtoemail": True,
+                      "sendtosms": True,
+                      "sendnotificationwhendown": 5}
+
+    if matchObj:
+        print "Adding %s" % site_name
+        res = pingdom_connection.method(url="checks", method="POST", parameters=default_params)
+        print res
+    else:
+        print "Invalid site name: %s" % site_name
+
+
 def delete_check(check_id):
-  check_id = str(check_id)
-  matchObj = re.match(r"^\d+$", check_id)
+    check_id = str(check_id)
+    matchObj = re.match(r"^\d+$", check_id)
 
-  if matchObj:
-    print "Deleting check %s" % check_id
-    res = pingdom_connection.method(url="checks/"+check_id, method="DELETE")
-    print res
+    if matchObj:
+        print "Deleting check %s" % check_id
+        res = pingdom_connection.method(url="checks/" + check_id, method="DELETE")
+        print res
 
-  else:
-    print "invalid id: %s" % check_id
+    else:
+        print "invalid id: %s" % check_id
+
 
 def delete_site(site_name):
-	check = pingdom_connection.check_by_name(site_name)
-	check_id = check[0]['id']
-	delete_check(check_id)
+    check = pingdom_connection.check_by_name(site_name)
+    check_id = check[0]['id']
+    delete_check(check_id)
+
 
 def check_info(check_id):
-	check_id = str(check_id)
-	matchObj = re.match(r"^\d+$", check_id)
+    check_id = str(check_id)
+    matchObj = re.match(r"^\d+$", check_id)
 
-	if matchObj:
-		res = pingdom_connection.method(url="checks/"+check_id, method="GET")
-		print json.dumps(res, sort_keys=True, indent=4)
-	else:
-		print "Invalid id: %s" % check_id
-	
+    if matchObj:
+        res = pingdom_connection.method(url="checks/" + check_id, method="GET")
+        print json.dumps(res, sort_keys=True, indent=4)
+    else:
+        print "Invalid id: %s" % check_id
+
 
 def site_info(site_name):
-	check = pingdom_connection.check_by_name(site_name)
-	check_id = check[0]['id']
-	check_info(check_id)
-         
+    check = pingdom_connection.check_by_name(site_name)
+    check_id = check[0]['id']
+    check_info(check_id)
+
 if (len(sys.argv) > 2):
-  pingdom_connection = auth()
-  command = sys.argv[1]  
-  site_name = sys.argv[2]
-  options = { 'add'     : lambda x: add_site(x),
-              'delete'  : lambda x: delete_site(x),
-              'info'    : lambda x: site_info(x)
-  }
-  options[command](site_name)
+    pingdom_connection = auth()
+    command = sys.argv[1]
+    site_name = sys.argv[2]
+    options = {'add': lambda x: add_site(x),
+               'delete': lambda x: delete_site(x),
+               'info': lambda x: site_info(x)}
+    options[command](site_name)
 else:
-  print "usage: %s COMMAND SITE_NAME" % sys.argv[0]
+    print "usage: %s COMMAND SITE_NAME" % sys.argv[0]
