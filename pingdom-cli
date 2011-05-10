@@ -1,16 +1,26 @@
 #!/usr/bin/python
 
+import os
 import re
 import sys
 import pingdom
 import json
 
+# Default Pingdom credentials
 PINGDOM_USERNAME = 'username'
 PINGDOM_PASSWORD = 'password'
 PINGDOM_APPKEY = 'appkey'
 
+# JSON file with Pingdom credentials
+PINGDOM_AUTHFILE = 'auth.json'
+
 
 def auth():
+    if os.path.exists(PINGDOM_AUTHFILE):
+        auth_data = json.loads(open(PINGDOM_AUTHFILE).read())
+        PINGDOM_USERNAME = auth_data['PINGDOM_USERNAME']
+        PINGDOM_PASSWORD = auth_data['PINGDOM_PASSWORD']
+        PINGDOM_APPKEY = auth_data['PINGDOM_APPKEY']
     return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
 
 
