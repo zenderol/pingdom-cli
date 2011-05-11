@@ -16,6 +16,7 @@ PINGDOM_APPKEY = 'appkey'
 PINGDOM_AUTHFILE = 'auth.json'
 
 
+#FIXME: Default credentials not loaded
 def auth():
     if os.path.exists(PINGDOM_AUTHFILE):
         auth_data = json.loads(open(PINGDOM_AUTHFILE).read())
