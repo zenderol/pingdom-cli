@@ -36,7 +36,10 @@ def validate_id(ident):
         return False
 
 
-def add_site_check(site_name):
+def usage():
+    print "usage: %s COMMAND SITE_NAME [PARAMS]" % sys.argv[0]
+
+def add_site_check(site_name,params=""):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
     default_params = {"name": site_name,
@@ -84,28 +87,39 @@ def get_site_check_info(site_name):
     check_info(check_id)
 
 
-def modify_check(check_id, params):
+def modify_check(check_id,params=None):
     check_id = str(check_id)
-    params = json.loads(params)
+    if params != None:
+        params = json.loads(str(params))
     
     if validate_id(check_id):
         res = pingdom_connection.method(url="checks/" + check_id, method="PUT", parameters=params)
         print res
 
 
-def modify_site_check(site_name, params):
+def modify_site_check(site_name, params=None):
     check = pingdom_connection.check_by_name(site_name)
     check_id = check[0]['id']
-    modify_check(check_id, params)
+    modify_check(check_id,params)
 
-if (len(sys.argv) > 2):
+
+if (len(sys.argv) >= 3):
     pingdom_connection = auth()
     command = sys.argv[1]
     site_name = sys.argv[2]
-    options = {'add': lambda x: add_site_check(x),
-               'delete': lambda x: delete_site_check(x),
-               'info': lambda x: get_site_check_info(x),
-               'modify': lambda x,y: modify_site_check(x)}
-    options[command](site_name)
+    params = None
+    if len(sys.argv) == 4:
+        params = sys.argv[3]
+        
+    if command == 'add':
+        add_site_check(site_name)
+    elif command == 'delete':
+        delete_site_check(site_name)
+    elif command == 'info':
+        get_site_check_info(site_name)
+    elif command == 'modify':
+        modify_site_check(site_name,params)
+    else:
+        usage()
 else:
-    print "usage: %s COMMAND SITE_NAME" % sys.argv[0]
+    usage()
