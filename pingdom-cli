@@ -69,6 +69,7 @@ def delete_check(check_id):
 
 def delete_site_check(site_name):
     check = pingdom_connection.check_by_name(site_name)
+    #FIXME: IndexError if site does not exist
     check_id = check[0]['id']
     delete_check(check_id)
 
@@ -83,6 +84,7 @@ def check_info(check_id):
 
 def get_site_check_info(site_name):
     check = pingdom_connection.check_by_name(site_name)
+    #FIXME: IndexError if site does not exist
     check_id = check[0]['id']
     check_info(check_id)
 
@@ -99,6 +101,7 @@ def modify_check(check_id,params=None):
 
 def modify_site_check(site_name, params=None):
     check = pingdom_connection.check_by_name(site_name)
+    #FIXME: IndexError if site does not exist
     check_id = check[0]['id']
     modify_check(check_id,params)
 
