@@ -5,6 +5,7 @@ import re
 import sys
 import pingdom
 import json
+from optparse import OptionParser
 
 # Default Pingdom credentials
 PINGDOM_USERNAME = 'username'
@@ -24,7 +25,18 @@ def auth():
     return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
 
 
-def add_site(site_name):
+def validate_id(ident):
+    ident = str(ident)
+    matchObj = re.match(r"^\d+$", ident)
+
+    if matchObj:
+        return True
+    else:
+        print "Invalid id: %s" % ident
+        return False
+
+
+def add_site_check(site_name):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
     default_params = {"name": site_name,
@@ -45,18 +57,14 @@ def add_site(site_name):
 
 def delete_check(check_id):
     check_id = str(check_id)
-    matchObj = re.match(r"^\d+$", check_id)
 
-    if matchObj:
+    if validate_id(check_id):
         print "Deleting check %s" % check_id
         res = pingdom_connection.method(url="checks/" + check_id, method="DELETE")
         print res
 
-    else:
-        print "invalid id: %s" % check_id
 
-
-def delete_site(site_name):
+def delete_site_check(site_name):
     check = pingdom_connection.check_by_name(site_name)
     check_id = check[0]['id']
     delete_check(check_id)
@@ -64,27 +72,40 @@ def delete_site(site_name):
 
 def check_info(check_id):
     check_id = str(check_id)
-    matchObj = re.match(r"^\d+$", check_id)
 
-    if matchObj:
+    if validate_id(check_id):
         res = pingdom_connection.method(url="checks/" + check_id, method="GET")
         print json.dumps(res, sort_keys=True, indent=4)
-    else:
-        print "Invalid id: %s" % check_id
 
 
-def site_info(site_name):
+def get_site_check_info(site_name):
     check = pingdom_connection.check_by_name(site_name)
     check_id = check[0]['id']
     check_info(check_id)
+
+
+def modify_check(check_id, params):
+    check_id = str(check_id)
+    params = json.loads(params)
+    
+    if validate_id(check_id):
+        res = pingdom_connection.method(url="checks/" + check_id, method="PUT", parameters=params)
+        print res
+
+
+def modify_site_check(site_name, params):
+    check = pingdom_connection.check_by_name(site_name)
+    check_id = check[0]['id']
+    modify_check(check_id, params)
 
 if (len(sys.argv) > 2):
     pingdom_connection = auth()
     command = sys.argv[1]
     site_name = sys.argv[2]
-    options = {'add': lambda x: add_site(x),
-               'delete': lambda x: delete_site(x),
-               'info': lambda x: site_info(x)}
+    options = {'add': lambda x: add_site_check(x),
+               'delete': lambda x: delete_site_check(x),
+               'info': lambda x: get_site_check_info(x),
+               'modify': lambda x,y: modify_site_check(x)}
     options[command](site_name)
 else:
     print "usage: %s COMMAND SITE_NAME" % sys.argv[0]
