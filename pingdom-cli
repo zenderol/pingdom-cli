@@ -16,14 +16,16 @@ PINGDOM_APPKEY = 'appkey'
 PINGDOM_AUTHFILE = 'auth.json'
 
 
-#FIXME: Default credentials not loaded
 def auth():
+    global PINGDOM_USERNAME
+    global PINGDOM_PASSWORD
+    global PINGDOM_APPKEY
     if os.path.exists(PINGDOM_AUTHFILE):
         auth_data = json.loads(open(PINGDOM_AUTHFILE).read())
         PINGDOM_USERNAME = auth_data['PINGDOM_USERNAME']
         PINGDOM_PASSWORD = auth_data['PINGDOM_PASSWORD']
         PINGDOM_APPKEY = auth_data['PINGDOM_APPKEY']
-    return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
+    return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)                                    
 
 
 def validate_id(ident):
