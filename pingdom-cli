@@ -25,7 +25,7 @@ def auth():
         PINGDOM_USERNAME = auth_data['PINGDOM_USERNAME']
         PINGDOM_PASSWORD = auth_data['PINGDOM_PASSWORD']
         PINGDOM_APPKEY = auth_data['PINGDOM_APPKEY']
-    return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)                                    
+    return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
 
 
 def validate_id(ident):
@@ -47,10 +47,12 @@ def get_check_id(name):
         print "%s check not found" % name
         return None
 
+
 def usage():
     print "usage: %s COMMAND SITE_NAME [PARAMS]" % sys.argv[0]
 
-def add_site_check(site_name,params=""):
+
+def add_site_check(site_name, params=""):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
     default_params = {"name": site_name,
@@ -102,7 +104,7 @@ def get_site_check_info(site_name):
         check_info(check_id)
 
 
-def modify_check(check_id,params=None):
+def modify_check(check_id, params=None):
     check_id = str(check_id)
     if params != None:
         try:
@@ -110,7 +112,7 @@ def modify_check(check_id,params=None):
         except ValueError, err:
             print str(err) + ": %s" % params
             sys.exit()
-    
+
     if validate_id(check_id):
         try:
             res = pingdom_connection.method(url="checks/" + check_id, method="PUT", parameters=params)
@@ -123,7 +125,7 @@ def modify_check(check_id,params=None):
 def modify_site_check(site_name, params=None):
     check_id = get_check_id(site_name)
     if check_id != None:
-        modify_check(check_id,params)
+        modify_check(check_id, params)
 
 
 if (len(sys.argv) >= 3):
@@ -133,7 +135,7 @@ if (len(sys.argv) >= 3):
     params = None
     if len(sys.argv) == 4:
         params = sys.argv[3]
-        
+
     if command == 'add':
         add_site_check(site_name)
     elif command == 'delete':
@@ -141,7 +143,7 @@ if (len(sys.argv) >= 3):
     elif command == 'info':
         get_site_check_info(site_name)
     elif command == 'modify':
-        modify_site_check(site_name,params)
+        modify_site_check(site_name, params)
     else:
         usage()
 else:
