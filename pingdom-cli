@@ -88,8 +88,12 @@ def check_info(check_id):
     check_id = str(check_id)
 
     if validate_id(check_id):
-        res = pingdom_connection.method(url="checks/" + check_id, method="GET")
-        print json.dumps(res, sort_keys=True, indent=4)
+        try:
+            res = pingdom_connection.method(url="checks/" + check_id, method="GET")
+            print json.dumps(res, sort_keys=True, indent=4)
+        except Exception, err:
+            print err
+            sys.exit()
 
 
 def get_site_check_info(site_name):
@@ -101,13 +105,19 @@ def get_site_check_info(site_name):
 def modify_check(check_id,params=None):
     check_id = str(check_id)
     if params != None:
-        #FIXME: ValueError if params are malformed
-        params = json.loads(str(params))
+        try:
+            params = json.loads(str(params))
+        except ValueError, err:
+            print str(err) + ": %s" % params
+            sys.exit()
     
     if validate_id(check_id):
-        print params
-        res = pingdom_connection.method(url="checks/" + check_id, method="PUT", parameters=params)
-        print res
+        try:
+            res = pingdom_connection.method(url="checks/" + check_id, method="PUT", parameters=params)
+            print res
+        except Exception, err:
+            print err
+            sys.exit()
 
 
 def modify_site_check(site_name, params=None):
