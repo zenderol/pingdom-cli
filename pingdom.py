@@ -23,7 +23,10 @@
 from urlparse import urljoin
 from urllib import urlencode
 import urllib2
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 import time
 
 API_URL = 'https://api.pingdom.com/api/2.0/'

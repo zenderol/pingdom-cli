@@ -4,8 +4,10 @@ import os
 import re
 import sys
 import pingdom
-import json
-from optparse import OptionParser
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 # Default Pingdom credentials
 PINGDOM_USERNAME = 'username'
