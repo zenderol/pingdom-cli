@@ -58,7 +58,15 @@ def get_check_id(name):
 
 
 def usage():
-    print "usage: %s COMMAND SITE_NAME [PARAMS]" % sys.argv[0]
+    print "usage: %s COMMAND SITE_NAME [PARAMS]\n" % sys.argv[0]
+    print "    Commands:"
+    print "        add       - add a site check"
+    print "        delete    - delete a check by name"
+    print "        info      - get JSON dump of check info"
+    print "        modify    - modify a check"
+    print "        listnames - list all check names"
+    print "        listids   - list all check ids"
+    print ""
 
 
 def list_check_names():
