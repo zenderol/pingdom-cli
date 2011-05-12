@@ -25,7 +25,11 @@ def auth():
         PINGDOM_USERNAME = auth_data['PINGDOM_USERNAME']
         PINGDOM_PASSWORD = auth_data['PINGDOM_PASSWORD']
         PINGDOM_APPKEY = auth_data['PINGDOM_APPKEY']
-    return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
+    try:
+        return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
+    except Exception, err:
+        print err
+        sys.exit()
 
 
 def validate_id(ident):
@@ -40,7 +44,12 @@ def validate_id(ident):
 
 
 def get_check_id(name):
-    check = pingdom_connection.check_by_name(name)
+    try:
+        check = pingdom_connection.check_by_name(name)
+    except Exception, err:
+        print err
+        sys.exit()
+
     if len(check) != 0:
         return check[0]['id']
     else:
@@ -53,13 +62,23 @@ def usage():
 
 
 def list_check_names():
-    checks = pingdom_connection.method("checks", "GET")
+    try:
+        checks = pingdom_connection.method("checks", "GET")
+    except Exception, err:
+        print err
+        sys.exit()
+
     for check in checks['checks']:
         print check['name']
 
 
 def list_check_ids():
-    checks = pingdom_connection.method("checks", "GET")
+    try:
+        checks = pingdom_connection.method("checks", "GET")
+    except Exception, err:
+        print err
+        sys.exit()
+
     for check in checks['checks']:
         print check['id']
 
@@ -67,6 +86,7 @@ def list_check_ids():
 def add_site_check(site_name, params=""):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
+    #TODO: overide default params with params passed in
     default_params = {"name": site_name,
                       "host": site_name,
                       "type": "http",
@@ -77,8 +97,12 @@ def add_site_check(site_name, params=""):
 
     if matchObj:
         print "Adding %s" % site_name
-        res = pingdom_connection.method(url="checks", method="POST", parameters=default_params)
-        print res
+        try:
+            res = pingdom_connection.method(url="checks", method="POST", parameters=default_params)
+            print res
+        except Exception, err:
+            print err
+            sys.exit()
     else:
         print "Invalid site name: %s" % site_name
 
@@ -88,8 +112,12 @@ def delete_check(check_id):
 
     if validate_id(check_id):
         print "Deleting check %s" % check_id
-        res = pingdom_connection.method(url="checks/" + check_id, method="DELETE")
-        print res
+        try:
+            res = pingdom_connection.method(url="checks/" + check_id, method="DELETE")
+            print res
+        except Exception, err:
+            print err
+            sys.exit()
 
 
 def delete_site_check(site_name):
@@ -140,11 +168,14 @@ def modify_site_check(site_name, params=None):
         modify_check(check_id, params)
 
 
-if (len(sys.argv) >= 3):
+if (len(sys.argv) >= 2):
     pingdom_connection = auth()
     command = sys.argv[1]
-    site_name = sys.argv[2]
+    site_name = None
     params = None
+
+    if len(sys.argv) == 3:
+        site_name = sys.argv[2]
     if len(sys.argv) == 4:
         params = sys.argv[3]
 
