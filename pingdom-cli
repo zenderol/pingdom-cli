@@ -52,6 +52,18 @@ def usage():
     print "usage: %s COMMAND SITE_NAME [PARAMS]" % sys.argv[0]
 
 
+def list_check_names():
+    checks = pingdom_connection.method("checks", "GET")
+    for check in checks['checks']:
+        print check['name']
+
+
+def list_check_ids():
+    checks = pingdom_connection.method("checks", "GET")
+    for check in checks['checks']:
+        print check['id']
+
+
 def add_site_check(site_name, params=""):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
@@ -144,6 +156,10 @@ if (len(sys.argv) >= 3):
         get_site_check_info(site_name)
     elif command == 'modify':
         modify_site_check(site_name, params)
+    elif command == 'listnames':
+        list_check_names()
+    elif command == 'listids':
+        list_check_ids()
     else:
         usage()
 else:
