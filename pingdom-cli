@@ -103,7 +103,8 @@ def add_site_check(site_name, params=""):
                       "resolution": 1,
                       "sendtoemail": True,
                       "sendtosms": True,
-                      "sendnotificationwhendown": 5}
+                      "sendnotificationwhendown": 2,
+                      "notifyagainevery": 120}
 
     if matchObj:
         print "Adding %s" % site_name
