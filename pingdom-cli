@@ -68,8 +68,24 @@ def usage():
     print "        modify    - modify a check"
     print "        listnames - list all check names"
     print "        listids   - list all check ids"
+    print "        credits   - return info on remaining checks and credits"
     print ""
 
+
+def pingdom_api_call(command, method, params=None):
+    if params != None:
+        try:
+            params = json.loads(str(params))
+        except ValueError, err:
+            print str(err) + ": %s" % params
+            sys.exit()
+        
+    try:
+        res = pingdom_connection.method(command, method, params)
+        print json.dumps(res, sort_keys=True, indent=4)
+    except Exception, err:
+        print err
+        sys.exit()
 
 def list_check_names():
     try:
@@ -202,6 +218,8 @@ if (len(sys.argv) >= 2):
         list_check_names()
     elif command == 'listids':
         list_check_ids()
+    elif command == 'credits':
+        pingdom_api_call('credits', 'GET')
     else:
         usage()
 else:
