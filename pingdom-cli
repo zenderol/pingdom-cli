@@ -73,7 +73,7 @@ def usage():
 
 
 def pingdom_api_call(command, method, params=None):
-    if params != None:
+    if params != None and not(isinstance(params, dict)):
         try:
             params = json.loads(str(params))
         except ValueError, err:
@@ -83,29 +83,20 @@ def pingdom_api_call(command, method, params=None):
         
     try:
         res = pingdom_connection.method(command, method, params)
-        print json.dumps(res, sort_keys=True, indent=4)
+        #print json.dumps(res, sort_keys=True, indent=4)
+        return res
     except Exception, err:
         sys.stderr.write(str(err)+"\n")
         sys.exit(1)
 
 def list_check_names():
-    try:
-        checks = pingdom_connection.method("checks", "GET")
-    except Exception, err:
-        sys.stderr.write(str(err)+"\n")
-        sys.exit(1)
-
+    checks = pingdom_api_call("checks", "GET")
     for check in checks['checks']:
         print check['name']
 
 
 def list_check_ids():
-    try:
-        checks = pingdom_connection.method("checks", "GET")
-    except Exception, err:
-        sys.stderr.write(str(err)+"\n")
-        sys.exit(1)
-
+    checks = pingdom_api_call("checks", "GET")
     for check in checks['checks']:
         print check['id']
 
@@ -125,12 +116,7 @@ def add_site_check(site_name, params=""):
 
     if matchObj:
         print "Adding %s" % site_name
-        try:
-            res = pingdom_connection.method(url="checks", method="POST", parameters=default_params)
-            print res
-        except Exception, err:
-            sys.stderr.write(str(err)+"\n")
-            sys.exit(1)
+        print pingdom_api_call("checks", "POST", default_params)
     else:
         print "Invalid site name: %s" % site_name
 
@@ -140,12 +126,7 @@ def delete_check(check_id):
 
     if validate_id(check_id):
         print "Deleting check %s" % check_id
-        try:
-            res = pingdom_connection.method(url="checks/" + check_id, method="DELETE")
-            print res
-        except Exception, err:
-            sys.stderr.write(str(err)+"\n")
-            sys.exit(1)
+        print pingdom_api_call("checks/" + check_id, "DELETE")
 
 
 def delete_site_check(site_name):
@@ -158,12 +139,8 @@ def check_info(check_id):
     check_id = str(check_id)
 
     if validate_id(check_id):
-        try:
-            res = pingdom_connection.method(url="checks/" + check_id, method="GET")
-            print json.dumps(res, sort_keys=True, indent=4)
-        except Exception, err:
-            sys.stderr.write(str(err)+"\n")
-            sys.exit(1)
+        res = pingdom_api_call("checks/" + check_id, "GET")
+        print json.dumps(res, sort_keys=True, indent=4)
 
 
 def get_site_check_info(site_name):
@@ -183,12 +160,8 @@ def modify_check(check_id, params=None):
             sys.exit(1)
 
     if validate_id(check_id):
-        try:
-            res = pingdom_connection.method(url="checks/" + check_id, method="PUT", parameters=params)
-            print res
-        except Exception, err:
-            sys.stderr.write(str(err)+"\n")
-            sys.exit(1)
+        res = pingdom_api_call("checks/" + check_id, "PUT", params)
+        print res
 
 
 def modify_site_check(site_name, params=None):
