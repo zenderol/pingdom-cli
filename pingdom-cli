@@ -83,11 +83,14 @@ def pingdom_api_call(command, method, params=None):
         
     try:
         res = pingdom_connection.method(command, method, params)
-        #print json.dumps(res, sort_keys=True, indent=4)
         return res
     except Exception, err:
         sys.stderr.write(str(err)+"\n")
         sys.exit(1)
+
+def get_credits():
+    res = pingdom_api_call('credits', 'GET')
+    print json.dumps(res, sort_keys=True, indent=4)
 
 def list_check_names():
     checks = pingdom_api_call("checks", "GET")
@@ -194,7 +197,7 @@ if (len(sys.argv) >= 2):
     elif command == 'listids':
         list_check_ids()
     elif command == 'credits':
-        pingdom_api_call('credits', 'GET')
+        get_credits()
     else:
         usage()
 else:
