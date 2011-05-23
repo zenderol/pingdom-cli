@@ -104,6 +104,11 @@ def list_check_ids():
         print check['id']
 
 
+def list_contacts():
+    contacts = pingdom_api_call("contacts", "GET")
+    for contact in contacts['contacts']:
+        print "%s: %s" % (contact['id'], contact['name'])
+
 def add_site_check(site_name, params=""):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
@@ -196,6 +201,8 @@ if (len(sys.argv) >= 2):
         list_check_names()
     elif command == 'listids':
         list_check_ids()
+    elif command == 'listcontacts':
+        list_contacts()
     elif command == 'credits':
         get_credits()
     else:
