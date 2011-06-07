@@ -68,6 +68,7 @@ def usage():
     print "        modify    - modify a check"
     print "        listnames - list all check names"
     print "        listids   - list all check ids"
+    print "        listsites - list all HTTP checks"
     print "        credits   - return info on remaining checks and credits"
     print ""
 
@@ -88,14 +89,23 @@ def pingdom_api_call(command, method, params=None):
         sys.stderr.write(str(err)+"\n")
         sys.exit(1)
 
+
 def get_credits():
     res = pingdom_api_call('credits', 'GET')
     print json.dumps(res, sort_keys=True, indent=4)
+
 
 def list_check_names():
     checks = pingdom_api_call("checks", "GET")
     for check in checks['checks']:
         print check['name']
+
+
+def list_sites():
+    checks = pingdom_api_call("checks", "GET")
+    for check in checks['checks']:
+        if check['type'] == "http":
+            print check['name']
 
 
 def list_check_ids():
@@ -199,6 +209,8 @@ if (len(sys.argv) >= 2):
         modify_site_check(site_name, params)
     elif command == 'listnames':
         list_check_names()
+    elif command == 'listsites':
+        list_sites()
     elif command == 'listids':
         list_check_ids()
     elif command == 'listcontacts':
