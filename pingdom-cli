@@ -119,22 +119,22 @@ def list_contacts():
     for contact in contacts['contacts']:
         print "%s: %s" % (contact['id'], contact['name'])
 
-def add_site_check(site_name, params=""):
+def add_site_check(site_name, params=None):
     matchObj = re.match(r"^[\w.]+$", site_name)
 
-    #TODO: overide default params with params passed in
-    default_params = {"name": site_name,
-                      "host": site_name,
-                      "type": "http",
-                      "resolution": 1,
-                      "sendtoemail": True,
-                      "sendtosms": True,
-                      "sendnotificationwhendown": 2,
-                      "notifyagainevery": 120}
+    if params == None:
+        params = {"name": site_name,
+                  "host": site_name,
+                  "type": "http",
+                  "resolution": 1,
+                  "sendtoemail": True,
+                  "sendtosms": True,
+                  "sendnotificationwhendown": 2,
+                  "notifyagainevery": 120}
 
     if matchObj:
         print "Adding %s" % site_name
-        print pingdom_api_call("checks", "POST", default_params)
+        print pingdom_api_call("checks", "POST", params)
     else:
         print "Invalid site name: %s" % site_name
 
@@ -200,7 +200,7 @@ if (len(sys.argv) >= 2):
         params = sys.argv[3]
 
     if command == 'add':
-        add_site_check(site_name)
+        add_site_check(site_name, params)
     elif command == 'delete':
         delete_site_check(site_name)
     elif command == 'info':
