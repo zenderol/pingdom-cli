@@ -50,6 +50,7 @@ def get_check_id(name):
         check = pingdom_connection.check_by_name(name)
     except Exception, err:
         sys.stderr.write(str(err)+"\n")
+        print err.read()
         sys.exit(1)
 
     if len(check) != 0:
@@ -87,6 +88,7 @@ def pingdom_api_call(command, method, params=None):
         return res
     except Exception, err:
         sys.stderr.write(str(err)+"\n")
+        print err.read()
         sys.exit(1)
 
 
