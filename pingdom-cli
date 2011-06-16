@@ -122,7 +122,7 @@ def list_contacts():
         print "%s: %s" % (contact['id'], contact['name'])
 
 def add_site_check(site_name, params=None):
-    matchObj = re.match(r"^[\w.]+$", site_name)
+    matchObj = re.match(r"^[\w.-]+$", site_name)
 
     if params == None:
         params = {"name": site_name,
