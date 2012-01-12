@@ -63,14 +63,15 @@ def get_check_id(name):
 def usage():
     print "usage: %s COMMAND CHECK_NAME [PARAMS]\n" % sys.argv[0]
     print "    Commands:"
-    print "        add       - add a check"
-    print "        delete    - delete a check by name"
-    print "        info      - get JSON dump of check info"
-    print "        modify    - modify a check"
-    print "        listnames - list all check names"
-    print "        listids   - list all check ids"
-    print "        listsites - list all HTTP checks"
-    print "        credits   - return info on remaining checks and credits"
+    print "        add          - add a check"
+    print "        delete       - delete a check by name"
+    print "        info         - get JSON dump of check info"
+    print "        modify       - modify a check"
+    print "        listnames    - list all check names"
+    print "        listcontacts - list all contacts"
+    print "        listids      - list all check ids"
+    print "        listsites    - list all HTTP checks"
+    print "        credits      - return info on remaining checks and credits"
     print ""
 
 
