@@ -11,6 +11,11 @@ Dependencies
 - Python
 - drcraig's Python Module for Pingdom REST API: https://github.com/drcraig/python-restful-pingdom
 
+Configuration
+-------------
+
+Edit the file named "auth.json" with your Pingdom username, password and API key.
+
 Usage
 -----
 
