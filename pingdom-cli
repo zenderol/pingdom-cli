@@ -13,6 +13,7 @@ except ImportError:
 PINGDOM_USERNAME = 'username'
 PINGDOM_PASSWORD = 'password'
 PINGDOM_APPKEY = 'appkey'
+PINGDOM_ACC_EMAIL = 'acc_email'
 
 # JSON file with Pingdom credentials
 PINGDOM_AUTHFILE = 'auth.json'
@@ -22,13 +23,15 @@ def auth():
     global PINGDOM_USERNAME
     global PINGDOM_PASSWORD
     global PINGDOM_APPKEY
+    global PINGDOM_ACC_EMAIL
     if os.path.exists(PINGDOM_AUTHFILE):
         auth_data = json.loads(open(PINGDOM_AUTHFILE).read())
         PINGDOM_USERNAME = auth_data['PINGDOM_USERNAME']
         PINGDOM_PASSWORD = auth_data['PINGDOM_PASSWORD']
         PINGDOM_APPKEY = auth_data['PINGDOM_APPKEY']
+        PINGDOM_ACC_EMAIL = auth_data['PINGDOM_ACC_EMAIL']
     try:
-        return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY)
+        return pingdom.Pingdom(username=PINGDOM_USERNAME, password=PINGDOM_PASSWORD, appkey=PINGDOM_APPKEY, acc_email=PINGDOM_ACC_EMAIL)
     except Exception, err:
         sys.stderr.write(str(err)+"\n")
         sys.exit(1)
@@ -125,6 +128,7 @@ def list_contacts():
 def add_site_check(site_name, params=None):
     matchObj = re.match(r"^[\w.-]+$", site_name)
 
+    #TODO: outsource default creating parameters
     if params == None:
         params = {"name": site_name,
                   "host": site_name,
