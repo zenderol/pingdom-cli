@@ -32,9 +32,10 @@ import time
 API_URL = 'https://api.pingdom.com/api/2.0/'
 
 class Pingdom(object):
-    def __init__(self, url=API_URL, username=None, password=None, appkey=None):
+    def __init__(self, url=API_URL, username=None, password=None, appkey=None, acc_email=None):
         self.url = url
         self.appkey= appkey
+        self.acc_email = acc_email
         password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(None, url, username, password)
         auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
@@ -64,6 +65,7 @@ class Pingdom(object):
         else:
             req = self.RequestWithMethod(method_url, http_method=method, data=data)
         req.add_header('App-Key', self.appkey)
+        req.add_header('Account-Email', self.acc_email)
         response = self.opener.open(req).read()
         return json.loads(response)
         
